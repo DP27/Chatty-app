@@ -24,10 +24,10 @@ class App extends Component {
    
   handleKeyPress = (e) => {
     if(e.key === 'Enter'){
-      console.log("enter pressed");
-      this.state.messages.push({id:'4',username:'Test',content:e.target.value});
+      this.state.messages.push({id:Math.random(),username:'Test',content:e.target.value});
       const message = this.state.messages
       this.setState({messages:message});
+      e.target.value = null;
     }
   }
 
@@ -47,7 +47,7 @@ class App extends Component {
             <a href="/" className = "navbar-brand">Chatty</a>
           </nav>
           <MessageList messages={this.state.messages}/>
-          <ChatBar userName={this.state.currentUser.name} handleKeyPress={this.handleKeyPress.bind(this)}/>
+          <ChatBar userName={this.state.currentUser.name} handleKeyPress={this.handleKeyPress}/>
         </div>
       );
     }
