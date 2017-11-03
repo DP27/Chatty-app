@@ -3,14 +3,17 @@ import Message from './Message.jsx';
 
 
 class MessageList extends Component {
+    
     render() {
         console.log("Incoming Message");
+        
         return (
             
             <main className="messages">
+                
                 {this.props.messages.map((singleMessage) =>
-                    {
-                    return (<Message key={singleMessage.id} content={singleMessage.content} username={singleMessage.username} />)     
+                   {            
+                    return (<Message key={singleMessage.id} content={singleMessage.content} username={singleMessage.username} type={singleMessage.type}/>)     
                     })
                 }
             </main>

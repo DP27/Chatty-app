@@ -9,7 +9,9 @@ class App extends Component {
   constructor(props){
     super(props);
     this.socket;
+    this.messageNotification;
     this.state = {
+      users:0,
       loading :false,
       currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: []
@@ -26,31 +28,49 @@ class App extends Component {
     this.socket.onmessage =(message) => {
       var messageFromServer = message.data;
       this.newMessageReceived(messageFromServer);
+      
     }
   }
-  newMessage = (messageNew,user) => {
-    if(user){
+  newMessage = (type,user,messageNew) => {
+    if(type === 'postNotification'){
+      this.socket.send(JSON.stringify({
+        type : 'postNotification',
+        content : `${this.state.currentUser.name} has changed their name to ${user}.`
+      }));
       this.state.currentUser.name = user;
+    }else if(type === 'postMessage'){
+      var newMessageObj = {type:'postMessage', username:this.state.currentUser.name,content:messageNew};  
+      this.socket.send(JSON.stringify(newMessageObj));
     }
-    var newMessageObj = {username:this.state.currentUser.name,content:messageNew};
-    console.log('message typed',messageNew);
-    //this.state.messages.push(newMessageObj);
-    this.socket.send(JSON.stringify(newMessageObj));
-    //const message = this.state.messages;
-    //this.setState({messages:message});
-   
+    
   }
-  // newUserName = (name) => {
-  //   this.state.currentUser.name = name;
-  
-  // }
+ 
 
   newMessageReceived = (messageNew) => {
-    console.log('received from server',messageNew);
-    this.state.messages.push(JSON.parse(messageNew));
-    const messageServer = this.state.messages;
-    console.log(messageServer);
-    this.setState({messages:messageServer});
+    const data = JSON.parse(messageNew);
+    console.log("messagenew:",messageNew);
+    switch(data.type) {
+      case "incomingMessage":
+        // handle incoming message
+        this.state.messages.push(data);
+        const messageServer = this.state.messages;
+        this.setState({messages:messageServer});
+        break;
+      case "incomingNotification":
+        // handle incoming notification
+          this.state.messages.push(data);
+          this.messageNotification = data.content;
+          const notification = this.state.messages;
+          this.setState({messages:notification});
+        break;
+      case "numberOfUsersConnected":
+        this.setState({users:data.numberOfUsersConnected});
+        break;
+      default:
+        // show an error in the console if the message type is unknown
+        throw new Error("Unknown event type " + data.type);
+    }
+   
   }
 
 
@@ -65,8 +85,9 @@ class App extends Component {
         <div>
           <nav className = "navbar">
             <a href="/" className = "navbar-brand">Chatty</a>
+            <p className ="onlineUsers">{this.state.users} users online.</p>
           </nav>
-          <MessageList messages={this.state.messages}/>
+          <MessageList messages={this.state.messages} messageNotification={this.messageNotification}/>
           <ChatBar userName={this.state.currentUser.name}  newMessage={this.newMessage} />
         </div>
       );
