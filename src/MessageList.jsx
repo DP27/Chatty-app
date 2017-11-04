@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import Message from './Message.jsx';
 
 
-class MessageList extends Component {
-    color = ["AliceBlue","Chartreuse","DarkGoldenRod","FireBrick"];
-    colorAssigned = this.color[parseInt(Math.random()*4,10)];
+class MessageList extends Component {//message list
+    
     render() {
         console.log("Incoming Message");
         
@@ -14,7 +13,8 @@ class MessageList extends Component {
                 
                 {this.props.messages.map((singleMessage) =>
                    {            
-                    return (<Message color={this.colorAssigned} key={singleMessage.id} content={singleMessage.content} username={singleMessage.username} type={singleMessage.type}/>)     
+                    return (<Message userName={this.props.userName} otherUsersTextColor={this.props.otherUsersTextColor} color={this.props.color}
+                     key={singleMessage.id} content={singleMessage.content} username={singleMessage.username} type={singleMessage.type}/>)     
                     })
                 }
             </main>

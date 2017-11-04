@@ -5,9 +5,12 @@ import ChatBar from './ChatBar.jsx';
   
 
 class App extends Component {
+  color = ["Blue","Chartreuse","DarkGoldenRod","FireBrick"];
   constructor(props){
     super(props);
     this.socket;
+    this.colorAssigned = this.color[parseInt(Math.random()*3,10)];
+    this.textColorOfOtherUser;
     this.messageNotification;
     this.state = {
       users:0,
@@ -38,7 +41,7 @@ class App extends Component {
       }));
       this.state.currentUser.name = user;
     }else if(type === 'postMessage'){
-      var newMessageObj = {type:'postMessage', username:this.state.currentUser.name,content:messageNew};  
+      var newMessageObj = {color: this.colorAssigned,type:'postMessage', username:this.state.currentUser.name,content:messageNew};  
       this.socket.send(JSON.stringify(newMessageObj));
     }
     
@@ -47,12 +50,12 @@ class App extends Component {
 
   newMessageReceived = (messageNew) => {
     const data = JSON.parse(messageNew);
-    console.log("messagenew:",messageNew);
     switch(data.type) {
       case "incomingMessage":
         // handle incoming message
         this.state.messages.push(data);
         const messageServer = this.state.messages;
+        this.textColorOfOtherUser = data.color;
         this.setState({messages:messageServer});
         break;
       case "incomingNotification":
@@ -86,7 +89,8 @@ class App extends Component {
             <a href="/" className = "navbar-brand">Chatty</a>
             <p className ="onlineUsers">{this.state.users} users online.</p>
           </nav>
-          <MessageList messages={this.state.messages} messageNotification={this.messageNotification}/>
+          <MessageList userName={this.state.currentUser.name} otherUsersTextColor={this.textColorOfOtherUser} 
+            color={this.colorAssigned} messages={this.state.messages} messageNotification={this.messageNotification}/>
           <ChatBar userName={this.state.currentUser.name}  newMessage={this.newMessage} />
         </div>
       );
