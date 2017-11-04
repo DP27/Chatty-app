@@ -5,7 +5,6 @@ import ChatBar from './ChatBar.jsx';
   
 
 class App extends Component {
-
   constructor(props){
     super(props);
     this.socket;
