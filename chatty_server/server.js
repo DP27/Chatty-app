@@ -27,7 +27,7 @@ wss.on('connection', (ws) => {
   numberOfUsersConnected += 1;
   wss.clients.forEach(function each(client) {
     client.send(JSON.stringify({type:"numberOfUsersConnected",numberOfUsersConnected:numberOfUsersConnected}));
-    });  
+  });  
   console.log('Client connected');
   ws.on('message', (message) => {
     let messageReceived = JSON.parse(message);
@@ -35,8 +35,8 @@ wss.on('connection', (ws) => {
       var NotificationToClients = {type:'incomingNotification',content:messageReceived.content};
       wss.clients.forEach(function each(client) {
       client.send(JSON.stringify(NotificationToClients));
-    });  
-  }else if(messageReceived.type === 'postMessage'){
+      });  
+    }else if(messageReceived.type === 'postMessage'){
       let user = messageReceived.username;
       var obj = {};
       obj[user] = messageReceived.color;
@@ -45,9 +45,8 @@ wss.on('connection', (ws) => {
       wss.clients.forEach(function each(client) {
           client.send(JSON.stringify(toSend)); 
       });
-  }
-    
-});
+    } 
+  });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => {numberOfUsersConnected -= 1;

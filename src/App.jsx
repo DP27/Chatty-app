@@ -29,8 +29,7 @@ class App extends Component {
     this.socket = chattyWebSocket;
     this.socket.onmessage =(message) => {
       var messageFromServer = message.data;
-      this.newMessageReceived(messageFromServer);
-      
+      this.newMessageReceived(messageFromServer); 
     }
   }
   newMessage = (type,user,messageNew) => {
@@ -44,7 +43,6 @@ class App extends Component {
       var newMessageObj = {color: this.colorAssigned,type:'postMessage', username:this.state.currentUser.name,content:messageNew};  
       this.socket.send(JSON.stringify(newMessageObj));
     }
-    
   }
  
 
@@ -71,8 +69,7 @@ class App extends Component {
       default:
         // show an error in the console if the message type is unknown
         throw new Error("Unknown event type " + data.type);
-    }
-   
+    } 
   }
 
 
@@ -81,7 +78,6 @@ class App extends Component {
       return (
         <h1>Loading the page.</h1> 
       );
-
     }else{
       return (
         <div>

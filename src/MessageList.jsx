@@ -3,10 +3,8 @@ import Message from './Message.jsx';
 
 
 class MessageList extends Component {//message list
-    
     render() {
         console.log("Incoming Message");
-        
         return (
             
             <main className="messages">
